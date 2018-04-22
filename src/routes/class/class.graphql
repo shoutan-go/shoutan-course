@@ -1,0 +1,20 @@
+query Class($id: ID!) {
+  class(id: $id) {
+    id
+    paid
+    beginAt
+    teacher
+    price
+    course {
+      id
+      lessons {
+        id
+        image
+        title
+        description
+        video
+        validatedIn
+      }
+    }
+  }
+}

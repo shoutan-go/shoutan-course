@@ -8,6 +8,7 @@
  */
 
 import 'whatwg-fetch';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import deepForceUpdate from 'react-deep-force-update';
@@ -19,7 +20,7 @@ import configureStore from './store/configureStore';
 import { updateMeta } from './DOMUtils';
 import history from './history';
 import createApolloClient from './core/createApolloClient';
-import router from './router';
+import createRouter from './router';
 
 // Universal HTTP client
 const fetch = createFetch(window.fetch, {
@@ -76,6 +77,7 @@ async function onLocationChange(location, action) {
     // Traverses the list of routes in the order they are defined until
     // it finds the first route that matches provided URL path string
     // and whose action method returns anything other than `undefined`.
+    const router = createRouter(window.App.baseUrl);
     const route = await router.resolve(context);
 
     // Prevent multiple page renders during the routing process
@@ -90,7 +92,9 @@ async function onLocationChange(location, action) {
 
     const renderReactApp = isInitialRender ? ReactDOM.hydrate : ReactDOM.render;
     appInstance = renderReactApp(
-      <App context={context}>{route.component}</App>,
+      <MuiThemeProvider>
+        <App context={context}>{route.component}</App>
+      </MuiThemeProvider>,
       container,
       () => {
         if (isInitialRender) {

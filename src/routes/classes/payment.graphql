@@ -1,0 +1,10 @@
+mutation makePayment($id: ID!) {
+  payment(class: $id) {
+    timestamp
+    nonceStr
+    package
+    signType
+    paySign
+    tradeNo
+  }
+}

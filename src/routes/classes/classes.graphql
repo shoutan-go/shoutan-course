@@ -1,0 +1,15 @@
+query Classes {
+  classes {
+    id
+    paid
+    beginAt
+    teacher
+    price
+    course {
+      id
+      image
+      title
+      description
+    }
+  }
+}

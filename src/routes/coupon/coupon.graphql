@@ -1,0 +1,19 @@
+query Coupon($id: String!) {
+  coupon(id: $id) {
+    id
+    class {
+      id
+      paid
+      beginAt
+      teacher
+      price
+      course {
+        id
+        image
+        title
+        description
+      }
+    }
+    used
+  }
+}

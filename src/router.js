@@ -8,18 +8,30 @@
  */
 
 import UniversalRouter from 'universal-router';
+import querystring from 'querystring';
 import routes from './routes';
+// import config from './config';
+function createRouter(baseUrl) {
+  return new UniversalRouter(routes, {
+    baseUrl,
+    resolveRoute(context, params) {
+      if (context.route.protected && !context.store.getState().user) {
+        return {
+          redirect: `${context.baseUrl}/login/wechat`,
+          from: `${context.pathname}?${querystring.stringify(context.query)}`,
+        };
+      }
+      if (typeof context.route.load === 'function') {
+        return context.route
+          .load()
+          .then(action => action.default(context, params));
+      }
+      if (typeof context.route.action === 'function') {
+        return context.route.action(context, params);
+      }
+      return undefined;
+    },
+  });
+}
 
-export default new UniversalRouter(routes, {
-  resolveRoute(context, params) {
-    if (typeof context.route.load === 'function') {
-      return context.route
-        .load()
-        .then(action => action.default(context, params));
-    }
-    if (typeof context.route.action === 'function') {
-      return context.route.action(context, params);
-    }
-    return undefined;
-  },
-});
+export default createRouter;

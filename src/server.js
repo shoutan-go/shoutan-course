@@ -10,12 +10,16 @@
 import path from 'path';
 import Promise from 'bluebird';
 import express from 'express';
+import session from 'express-session';
+import connectRedis from 'connect-redis';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import expressJwt, { UnauthorizedError as Jwt401Error } from 'express-jwt';
 import { graphql } from 'graphql';
 import expressGraphQL from 'express-graphql';
 import jwt from 'jsonwebtoken';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import nodeFetch from 'node-fetch';
 import React from 'react';
 import ReactDOM from 'react-dom/server';
@@ -28,7 +32,8 @@ import { ErrorPageWithoutStyle } from './routes/error/ErrorPage';
 import errorPageStyle from './routes/error/ErrorPage.css';
 import createFetch from './createFetch';
 import passport from './passport';
-import router from './router';
+import createRouter from './router';
+import { redis } from './redis';
 import models from './data/models';
 import schema from './data/schema';
 // import assets from './asset-manifest.json'; // eslint-disable-line import/no-unresolved
@@ -36,6 +41,7 @@ import chunks from './chunk-manifest.json'; // eslint-disable-line import/no-unr
 import configureStore from './store/configureStore';
 import { setRuntimeVariable } from './actions/runtime';
 import config from './config';
+import { notify } from './libs/wechatPayment';
 
 process.on('unhandledRejection', (reason, p) => {
   console.error('Unhandled Rejection at:', p, 'reason:', reason);
@@ -51,6 +57,10 @@ global.navigator = global.navigator || {};
 global.navigator.userAgent = global.navigator.userAgent || 'all';
 
 const app = express();
+
+// Add context path
+const baseApp = express();
+baseApp.use(config.baseUrl, app);
 
 //
 // If you are using proxy from external machine, you can set TRUST_PROXY env
@@ -88,27 +98,36 @@ app.use((err, req, res, next) => {
 });
 
 app.use(passport.initialize());
-
-app.get(
-  '/login/facebook',
-  passport.authenticate('facebook', {
-    scope: ['email', 'user_location'],
-    session: false,
+const RedisStore = connectRedis(session);
+app.use(
+  session({
+    store: new RedisStore({
+      client: redis,
+    }),
+    secret: config.sessionSecret,
+    resave: false,
+    saveUninitialized: true,
   }),
 );
+
+app.get('/login/wechat', passport.authenticate('wechat'));
 app.get(
-  '/login/facebook/return',
-  passport.authenticate('facebook', {
-    failureRedirect: '/login',
+  '/login/wechat/return',
+  passport.authenticate('wechat', {
+    failureRedirect: `${app.path}/login/wechat`,
     session: false,
   }),
   (req, res) => {
     const expiresIn = 60 * 60 * 24 * 180; // 180 days
     const token = jwt.sign(req.user, config.auth.jwt.secret, { expiresIn });
     res.cookie('id_token', token, { maxAge: 1000 * expiresIn, httpOnly: true });
-    res.redirect('/');
+    const { next } = req.session;
+    delete req.session.next;
+    res.redirect(next || '/');
   },
 );
+
+app.post('/payment/callback', notify);
 
 //
 // Register API middleware
@@ -119,6 +138,7 @@ const graphqlMiddleware = expressGraphQL(req => ({
   graphiql: __DEV__,
   rootValue: { request: req },
   pretty: __DEV__,
+  context: req,
 }));
 
 app.use('/graphql', graphqlMiddleware);
@@ -140,13 +160,13 @@ app.get('*', async (req, res, next) => {
     const apolloClient = createApolloClient({
       schema,
       rootValue: { request: req },
+      context: req,
     });
 
     // Universal HTTP client
     const fetch = createFetch(nodeFetch, {
       baseUrl: config.api.serverUrl,
       cookie: req.headers.cookie,
-      apolloClient,
       schema,
       graphql,
     });
@@ -184,15 +204,27 @@ app.get('*', async (req, res, next) => {
       client: apolloClient,
     };
 
+    const router = createRouter(config.baseUrl);
     const route = await router.resolve(context);
 
     if (route.redirect) {
+      if (route.from) {
+        req.session.next = route.from;
+      }
       res.redirect(route.status || 302, route.redirect);
       return;
     }
 
     const data = { ...route };
-    const rootComponent = <App context={context}>{route.component}</App>;
+    const rootComponent = (
+      <MuiThemeProvider
+        muiTheme={getMuiTheme({
+          userAgent: req.headers['user-agent'],
+        })}
+      >
+        <App context={context}>{route.component}</App>
+      </MuiThemeProvider>
+    );
     await getDataFromTree(rootComponent);
     // this is here because of Apollo redux APOLLO_QUERY_STOP action
     await Promise.delay(0);
@@ -200,6 +232,7 @@ app.get('*', async (req, res, next) => {
     data.styles = [{ id: 'css', cssText: [...css].join('') }];
 
     const scripts = new Set();
+    scripts.add('//res.wx.qq.com/open/js/jweixin-1.2.0.js');
     const addChunk = chunk => {
       if (chunks[chunk]) {
         chunks[chunk].forEach(asset => scripts.add(asset));
@@ -219,6 +252,7 @@ app.get('*', async (req, res, next) => {
     }
     data.app = {
       apiUrl: config.api.clientUrl,
+      baseUrl: config.baseUrl,
       state: context.store.getState(),
       apolloState: context.client.extract(),
     };
@@ -260,7 +294,7 @@ app.use((err, req, res, next) => {
 const promise = models.sync().catch(err => console.error(err.stack));
 if (!module.hot) {
   promise.then(() => {
-    app.listen(config.port, () => {
+    baseApp.listen(config.port, () => {
       console.info(`The server is running at http://localhost:${config.port}/`);
     });
   });
@@ -270,8 +304,8 @@ if (!module.hot) {
 // Hot Module Replacement
 // -----------------------------------------------------------------------------
 if (module.hot) {
-  app.hot = module.hot;
+  baseApp.hot = module.hot;
   module.hot.accept('./router');
 }
 
-export default app;
+export default baseApp;
