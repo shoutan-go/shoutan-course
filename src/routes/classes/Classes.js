@@ -52,7 +52,6 @@ class Classes extends React.Component {
       paid: false,
       teacher: null,
       loading: false,
-      tradeNo: null,
       notification: false,
     };
   }
@@ -86,9 +85,6 @@ class Classes extends React.Component {
       })
       .then(r => {
         if (typeof wx !== 'undefined') {
-          this.setState({
-            tradeNo: r.data.payment.tradeNo,
-          });
           console.info(r.data.payment);
           window.wx.ready(() => {
             window.wx.chooseWXPay(

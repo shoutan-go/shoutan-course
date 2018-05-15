@@ -9,7 +9,6 @@ export default {
     id: { type: new GraphQLNonNull(ID) },
   },
   async resolve(root, { id }, request) {
-    console.log('Mutation Coupon!');
     const coupon = await Coupon.findById(id);
     if (coupon.used) {
       throw new Error('Coupon used');
