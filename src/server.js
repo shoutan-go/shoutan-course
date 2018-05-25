@@ -76,6 +76,12 @@ app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.text());
+app.use(bodyParser.text({ type: '*/xml' }));
+app.use(bodyParser.text({
+  type: (type) => {
+    return type.startsWith && (type.startsWith('text') || type.startsWith('application/xml'));
+  },
+}));
 app.use(bodyParser.raw());
 
 //
