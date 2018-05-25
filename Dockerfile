@@ -2,7 +2,7 @@ FROM node:8.10.0-alpine
 
 WORKDIR /usr/src/build
 COPY . .
-RUN yarn install --production && yarn build --release
+RUN yarn install && yarn build --release
 
 # Set a working directory
 WORKDIR /usr/src/app
