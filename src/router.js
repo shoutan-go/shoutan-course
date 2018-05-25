@@ -17,8 +17,8 @@ function createRouter(baseUrl) {
     resolveRoute(context, params) {
       if (context.route.protected && !context.store.getState().user) {
         return {
-          redirect: `${context.baseUrl}/login/wechat`,
-          from: `${context.pathname}?${querystring.stringify(context.query)}`,
+          redirect: '//shoutanwq.com/login/wechat',
+          from: `//${context.hostname}${context.pathname}?${querystring.stringify(context.query)}`,
         };
       }
       if (typeof context.route.load === 'function') {

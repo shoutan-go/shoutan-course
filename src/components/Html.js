@@ -34,6 +34,19 @@ class Html extends React.Component {
     scripts: [],
   };
 
+  assetsMap(asset) {
+    if (asset.startsWith('/assets/') && this.props.hostname) {
+      const domain = this.props.hostname.split('.');
+      if (domain[domain.length - 2]) {
+        return `//assets.${domain[domain.length - 2]}.${
+          domain[domain.length - 1]
+        }${asset}`;
+      }
+      return `//assets.${domain[domain.length - 1]}${asset}`;
+    }
+    return asset;
+  }
+
   render() {
     const { title, description, styles, scripts, app, children } = this.props;
     return (
@@ -45,7 +58,7 @@ class Html extends React.Component {
           <meta name="description" content={description} />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           {scripts.map(script => (
-            <link key={script} rel="preload" href={script} as="script" />
+            <link key={script} rel="preload" href={this.assetsMap(script)} as="script" />
           ))}
           <link rel="manifest" href="/site.webmanifest" />
           <link rel="apple-touch-icon" href="/icon.png" />

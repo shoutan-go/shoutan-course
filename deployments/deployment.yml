@@ -1,0 +1,33 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: shoutan-course
+  labels:
+    app: shoutan-course
+    tier: frontend
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  template:
+    metadata:
+      labels:
+        app: shoutan-course
+        tier: frontend
+    spec:
+      terminationGracePeriodSeconds: 60
+      containers:
+      - envFrom:
+        - configMapRef:
+            name: shoutan-course
+        - secretRef:
+            name: web-secrets
+        image: registry-vpc.cn-qingdao.aliyuncs.com/shoutan/shoutan-course:latest
+        name: shoutan-course
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 8080
+      imagePullSecrets:
+      - name: aliyun-qingdao-registry-secret

@@ -105,26 +105,12 @@ app.use(
       client: redis,
     }),
     secret: config.sessionSecret,
+    cookie: {
+      domain: '.shoutanwq.com',
+    },
     resave: false,
     saveUninitialized: true,
   }),
-);
-
-app.get('/login/wechat', passport.authenticate('wechat'));
-app.get(
-  '/login/wechat/return',
-  passport.authenticate('wechat', {
-    failureRedirect: `${app.path}/login/wechat`,
-    session: false,
-  }),
-  (req, res) => {
-    const expiresIn = 60 * 60 * 24 * 180; // 180 days
-    const token = jwt.sign(req.user, config.auth.jwt.secret, { expiresIn });
-    res.cookie('id_token', token, { maxAge: 1000 * expiresIn, httpOnly: true });
-    const { next } = req.session;
-    delete req.session.next;
-    res.redirect(next || '/');
-  },
 );
 
 app.post('/payment/callback', notify);
