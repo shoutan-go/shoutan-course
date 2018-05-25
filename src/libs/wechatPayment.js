@@ -37,7 +37,7 @@ export function sign(payload) {
 const url = 'https://api.mch.weixin.qq.com/pay/orderquery';
 
 export function notify(req, res) {
-  console.info('payment nofity:', req.body);
+  console.info('payment nofity:', req);
   parser.parseString(req.body, (err, result) => {
     console.info(err, result);
     if (sign(result) === result.sign && result.return_code === 'SUCCESS') {
