@@ -1,16 +1,15 @@
 FROM node:8.10.0-alpine
 
+WORKDIR /usr/src/build
+COPY . .
+RUN yarn install --production && yarn build --release
+
 # Set a working directory
 WORKDIR /usr/src/app
 
-COPY ./build/package.json .
-COPY ./build/yarn.lock .
+RUN mv /usr/src/build/build/package.json . && mv /usr/src/build/build/yarn.lock .
 
-# Install Node.js dependencies
-RUN yarn install --production --no-progress
-
-# Copy application files
-COPY ./build .
+RUN yarn install --production --no-progress && mv /usr/src/build/build/* . && rm -rf /usr/src/build
 
 # Run the container under "node" user by default
 USER node
