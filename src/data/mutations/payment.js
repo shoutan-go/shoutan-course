@@ -9,8 +9,12 @@ import config from '../../config';
 import { redis } from '../../redis';
 import { Class, Course } from '../models';
 
-const HttpsProxyAgent = require('https-proxy-agent');
-
+let HttpsProxyAgent = null;
+try {
+  HttpsProxyAgent = require('https-proxy-agent');  
+} catch (error) {
+ //ignore error 
+}
 const url = 'https://api.mch.weixin.qq.com/pay/unifiedorder';
 
 const builder = new xml2js.Builder({

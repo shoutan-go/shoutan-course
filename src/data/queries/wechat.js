@@ -6,8 +6,9 @@ import WechatType from '../types/WechatType';
 import config from '../../config';
 import { redis } from '../../redis';
 
+let HttpsProxyAgent = null;
 try {
-  const HttpsProxyAgent = require('https-proxy-agent');  
+  HttpsProxyAgent = require('https-proxy-agent');  
 } catch (error) {
  //ignore error 
 }

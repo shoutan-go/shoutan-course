@@ -94,6 +94,8 @@ class Classes extends React.Component {
                     this.setState({
                       notification: true,
                     });
+                  }else{
+                    console.error(res);
                   }
                 },
               }),
@@ -103,12 +105,6 @@ class Classes extends React.Component {
       })
       .catch(() => {
         window.location.reload();
-      })
-      .then(() => {
-        this.setState({
-          loading: false,
-          notification: true,
-        });
       });
   };
 
