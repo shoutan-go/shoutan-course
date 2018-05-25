@@ -38,6 +38,7 @@ const url = 'https://api.mch.weixin.qq.com/pay/orderquery';
 
 export function notify(req, res) {
   parser.parseString(req.body, (err, result) => {
+    console.info(err, result);
     if (sign(result) === result.sign && result.return_code === 'SUCCESS') {
       redis
         .getAsync(`order|${result.out_trade_no}`)

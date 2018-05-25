@@ -90,14 +90,16 @@ class Classes extends React.Component {
             window.wx.chooseWXPay(
               Object.assign(r.data.payment, {
                 success(res) {
+                  console.info('success', res);
                   if (res.errMsg === 'chooseWXPay:ok') {
                     this.setState({
                       notification: true,
                     });
-                  }else{
-                    console.error(res);
                   }
                 },
+                fail(r) {
+                  console.error(r);
+                }
               }),
             );
           });
