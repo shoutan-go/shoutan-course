@@ -6,7 +6,11 @@ import WechatType from '../types/WechatType';
 import config from '../../config';
 import { redis } from '../../redis';
 
-const HttpsProxyAgent = require('https-proxy-agent');
+try {
+  const HttpsProxyAgent = require('https-proxy-agent');  
+} catch (error) {
+ //ignore error 
+}
 
 function sign(payload) {
   const algo = crypto.createHash('sha1');
