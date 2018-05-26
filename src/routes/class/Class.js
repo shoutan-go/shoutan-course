@@ -49,6 +49,7 @@ class Class extends React.Component {
   render() {
     if (this.props.data) {
       const { data } = this.props;
+      console.log('class beginAt validate:', data.class.beginAt, data.class.beginAt + 1 * 24 * 60 * 60 * 1000, new Date().getTime());
       return (
         <div className={s.root}>
           <h1>课程列表</h1>
