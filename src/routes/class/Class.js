@@ -49,7 +49,6 @@ class Class extends React.Component {
   render() {
     if (this.props.data) {
       const { data } = this.props;
-      console.log('class beginAt validate:', data.class.beginAt, data.class.beginAt + 1 * 24 * 60 * 60 * 1000, new Date().getTime());
       return (
         <div className={s.root}>
           <h1>课程列表</h1>
@@ -58,13 +57,14 @@ class Class extends React.Component {
               key={lesson.id}
               className={cx({
                 closed:
-                  data.class.beginAt +
+                  new Date(data.class.beginAt).getTime() +
                     lesson.validatedIn * 24 * 60 * 60 * 1000 >
                   new Date().getTime(),
               })}
               onClick={this.handleClick(
                 `/class/${this.props.data.class.id}/lesson/${lesson.id}`,
-                data.class.beginAt + lesson.validatedIn * 24 * 60 * 60 * 1000 <
+                new Date(data.class.beginAt).getTime() + 
+                    lesson.validatedIn * 24 * 60 * 60 * 1000 <
                   new Date().getTime(),
               )}
             >

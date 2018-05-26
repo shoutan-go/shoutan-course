@@ -72,6 +72,7 @@ class Classes extends React.Component {
   };
 
   handlePayment = clz => () => {
+    var self = this;
     this.setState({
       loading: true,
       open: false,
@@ -90,16 +91,11 @@ class Classes extends React.Component {
             window.wx.chooseWXPay(
               Object.assign(r.data.payment, {
                 success(res) {
-                  alert(JSON.stringify(res));
-                  console.info('success', res);
                   if (res.errMsg === 'chooseWXPay:ok') {
-                    this.setState({
+                    self.setState({
                       notification: true,
                     });
                   }
-                },
-                fail(r) {
-                  console.error(r);
                 }
               }),
             );
