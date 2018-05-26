@@ -94,6 +94,7 @@ class Classes extends React.Component {
                   if (res.errMsg === 'chooseWXPay:ok') {
                     self.setState({
                       notification: true,
+                      paid: true,
                     });
                   }
                 }
@@ -174,7 +175,7 @@ class Classes extends React.Component {
             }}
           />
         </Dialog>
-        <Dialog open={this.state.notification} title="购买成功">
+        <Dialog open={this.state.notification} actions={actions} title="购买成功">
           <p className={s.centered}>长按二维码加任课老师微信</p>
           <img className={s.centered} src={this.state.teacher} alt="" />
         </Dialog>
