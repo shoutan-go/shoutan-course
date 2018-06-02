@@ -86,7 +86,7 @@ class Coupon extends React.Component {
               title={coupon.class.course.title}
               subtitle={`${coupon.class.price / 100}元`}
             />
-            <CardText>{coupon.class.course.description}</CardText>
+            <CardText><pre className={s.description}>{coupon.class.course.description}</pre></CardText>
             <CardActions>
               {this.state.used ? (
                 <RaisedButton label="兑换券已被使用" disabled />
