@@ -147,7 +147,7 @@ class Classes extends React.Component {
                 title={clz.course.title}
                 subtitle={clz.paid ? '已付费' : `${clz.price / 100}元`}
               />
-              <CardText>{clz.course.description}</CardText>
+              <CardText><pre className={s.description}>{clz.course.description}</pre></CardText>
             </Card>
           </ListItem>
         ))}
@@ -165,7 +165,7 @@ class Classes extends React.Component {
             ''
           )}
           <br />
-          {this.state.description}
+          <pre className={s.description}>{this.state.description}</pre>
         </Dialog>
         <Dialog open={this.state.loading} modal>
           <CircularProgress
