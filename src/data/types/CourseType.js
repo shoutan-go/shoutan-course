@@ -23,7 +23,7 @@ export default new ObjectType({
           where: {
             course: parent.id,
           },
-          order: [['validatedIn', 'asc'], ['createdAt', 'desc']],
+          order: [['validatedIn', 'asc'], ['createdAt', 'asc']],
         }),
     },
   },

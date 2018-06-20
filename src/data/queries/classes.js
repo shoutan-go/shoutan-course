@@ -7,8 +7,7 @@ export default {
   async resolve() {
     return Class.findAll({
       order: [
-        ['validatedIn', 'asc'],
-        ['createdAt', 'asc'],
+        ['createdAt', 'desc'],
       ],
     });
   },
