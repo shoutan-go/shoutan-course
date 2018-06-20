@@ -148,6 +148,9 @@ class Classes extends React.Component {
                 subtitle={clz.paid ? '已付费' : `${clz.price / 100}元`}
               />
               <CardText><pre className={s.description}>{clz.course.description}</pre></CardText>
+              <CardActions>
+                <RaisedButton label="点击听课" primary onClick={this.handleClick(clz)} />
+              </CardActions>
             </Card>
           </ListItem>
         ))}
