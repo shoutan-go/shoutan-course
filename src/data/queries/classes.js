@@ -6,7 +6,10 @@ export default {
   type: new List(ClassType),
   async resolve() {
     return Class.findAll({
-      order: [['createdAt', 'desc']],
+      order: [
+        ['validatedIn', 'asc'],
+        ['createdAt', 'asc'],
+      ],
     });
   },
 };
