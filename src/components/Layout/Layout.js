@@ -17,6 +17,7 @@ import s from './Layout.css';
 import Header from '../Header';
 import Footer from '../Footer';
 import Wechat from '../Wechat';
+import GlobalDebugger from '../GlobalDebugger';
 
 class Layout extends React.Component {
   static propTypes = {
@@ -26,6 +27,7 @@ class Layout extends React.Component {
   render() {
     return (
       <div>
+        <GlobalDebugger />
         <Header />
         {this.props.children}
         <Footer />
