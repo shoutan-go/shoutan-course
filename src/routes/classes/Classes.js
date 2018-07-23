@@ -1,7 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
-import { Card, CardMedia, CardTitle, CardText, CardActions } from 'material-ui/Card';
+import {
+  Card,
+  CardMedia,
+  CardTitle,
+  CardText,
+  CardActions,
+} from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton';
 import CircularProgress from 'material-ui/CircularProgress';
 import Dialog from 'material-ui/Dialog';
@@ -73,7 +79,7 @@ class Classes extends React.Component {
   };
 
   handlePayment = clz => () => {
-    var self = this;
+    const self = this;
     this.setState({
       loading: true,
       open: false,
@@ -98,7 +104,7 @@ class Classes extends React.Component {
                       paid: true,
                     });
                   }
-                }
+                },
               }),
             );
           });
@@ -135,8 +141,35 @@ class Classes extends React.Component {
       );
     }
 
+    const myClasses = this.props.data.classes.filter(clz => clz.paid);
+    myClasses.reverse();
+
     return (
       <div className={s.root}>
+        {myClasses.length > 0 ? <h1>我参加的课程</h1> : <div />}
+        {myClasses.map(clz => (
+          <ListItem key={clz.id} onClick={this.handleClick(clz)}>
+            <Card>
+              <CardMedia>
+                <img src={clz.course.image} alt="" />
+              </CardMedia>
+              <CardTitle
+                title={clz.course.title}
+                subtitle={clz.paid ? '已付费' : `${clz.price / 100}元`}
+              />
+              <CardText>
+                <pre className={s.description}>{clz.course.description}</pre>
+              </CardText>
+              <CardActions>
+                <RaisedButton
+                  label="点击听课"
+                  primary
+                  onClick={this.handleClick(clz)}
+                />
+              </CardActions>
+            </Card>
+          </ListItem>
+        ))}
         <h1>开班列表</h1>
         {this.props.data.classes.map(clz => (
           <ListItem key={clz.id} onClick={this.handleClick(clz)}>
@@ -148,9 +181,15 @@ class Classes extends React.Component {
                 title={clz.course.title}
                 subtitle={clz.paid ? '已付费' : `${clz.price / 100}元`}
               />
-              <CardText><pre className={s.description}>{clz.course.description}</pre></CardText>
+              <CardText>
+                <pre className={s.description}>{clz.course.description}</pre>
+              </CardText>
               <CardActions>
-                <RaisedButton label="点击听课" primary onClick={this.handleClick(clz)} />
+                <RaisedButton
+                  label="点击听课"
+                  primary
+                  onClick={this.handleClick(clz)}
+                />
               </CardActions>
             </Card>
           </ListItem>
@@ -179,7 +218,11 @@ class Classes extends React.Component {
             }}
           />
         </Dialog>
-        <Dialog open={this.state.notification} actions={actions} title="购买成功">
+        <Dialog
+          open={this.state.notification}
+          actions={actions}
+          title="购买成功"
+        >
           <p className={s.centered}>长按二维码加任课老师微信</p>
           <img className={s.centered} src={this.state.teacher} alt="" />
         </Dialog>
