@@ -38,5 +38,9 @@ export default new ObjectType({
       type: new NonNull(StringType),
       resolve: parent => parent.beginAt,
     },
+    validatedIn: {
+      type: new List(Int),
+      resolve: parent => JSON.parse(parent.validatedIn),
+    },
   },
 });

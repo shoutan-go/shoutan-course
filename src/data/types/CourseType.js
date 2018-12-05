@@ -17,10 +17,6 @@ export default new ObjectType({
     image: { type: new NonNull(StringType) },
     title: { type: new NonNull(StringType) },
     description: { type: new NonNull(StringType) },
-    validatedIn: {
-      type: new List(Int),
-      resolve: parent => JSON.parse(parent.validatedIn),
-    },
     lessons: {
       type: new List(LessonType),
       resolve: parent =>

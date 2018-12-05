@@ -17,6 +17,9 @@ const Class = Model.define('Class', {
     type: DataType.DATEONLY,
     resolve: parent => parent.beginAt,
   },
+  validatedIn: {
+    type: DataType.STRING(1024),
+  },
   price: {
     type: DataType.INTEGER,
   },

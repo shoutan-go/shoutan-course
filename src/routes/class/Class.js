@@ -16,6 +16,7 @@ class Class extends React.Component {
         id: PropTypes.string.isRequired,
         paid: PropTypes.bool.isRequried,
         beginAt: PropTypes.string.isRequired,
+        validatedIn: PropTypes.arrayOf(PropTypes.number).isRequired,
         teacher: PropTypes.string.isRequired,
         price: PropTypes.number.isRequired,
         course: PropTypes.shape({
@@ -29,7 +30,6 @@ class Class extends React.Component {
               order: PropTypes.number.isRequired,
             }),
           ),
-          validatedIn: PropTypes.arrayOf(PropTypes.number).isRequired,
         }).isRequired,
       }).isRequired,
     }).isRequired,
@@ -59,7 +59,7 @@ class Class extends React.Component {
               className={cx({
                 closed:
                   new Date(data.class.beginAt).getTime() +
-                    this.props.data.class.course.validatedIn[i] *
+                    this.props.data.class.validatedIn[i] *
                       24 *
                       60 *
                       60 *
@@ -69,7 +69,7 @@ class Class extends React.Component {
               onClick={this.handleClick(
                 `/class/${this.props.data.class.id}/lesson/${lesson.id}`,
                 new Date(data.class.beginAt).getTime() +
-                  this.props.data.class.course.validatedIn[i] *
+                  this.props.data.class.validatedIn[i] *
                     24 *
                     60 *
                     60 *

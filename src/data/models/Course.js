@@ -16,9 +16,6 @@ const Course = Model.define('Course', {
   description: {
     type: DataType.TEXT,
   },
-  validatedIn: {
-    type: DataType.STRING(1024),
-  },
 });
 
 export default Course;
