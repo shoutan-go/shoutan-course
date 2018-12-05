@@ -2,6 +2,7 @@ import {
   GraphQLObjectType as ObjectType,
   GraphQLID as ID,
   GraphQLInt as Int,
+  GraphQLList as List,
   GraphQLBoolean as BooleanType,
   GraphQLString as StringType,
   GraphQLNonNull as NonNull,
