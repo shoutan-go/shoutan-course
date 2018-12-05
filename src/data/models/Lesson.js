@@ -22,7 +22,7 @@ const Lesson = Model.define('Lesson', {
   video: {
     type: DataType.STRING(255),
   },
-  validatedIn: {
+  order: {
     type: DataType.INTEGER,
     defaultValue: 0,
   },

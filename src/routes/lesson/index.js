@@ -13,7 +13,6 @@ async function action({ params, fetch }) {
               title
               description
               video
-              validatedIn
             }
           }`,
       }),

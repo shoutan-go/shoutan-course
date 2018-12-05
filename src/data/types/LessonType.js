@@ -41,6 +41,6 @@ export default new ObjectType({
         return null;
       },
     },
-    validatedIn: { type: Int },
+    order: { type: Int },
   },
 });

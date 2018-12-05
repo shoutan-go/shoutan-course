@@ -26,9 +26,10 @@ class Class extends React.Component {
               title: PropTypes.string.isRequired,
               description: PropTypes.string.isRequired,
               video: PropTypes.string.isRequired,
-              validatedIn: PropTypes.number.isRequired,
+              order: PropTypes.number.isRequired,
             }),
           ),
+          validatedIn: PropTypes.arrayOf(PropTypes.number).isRequired,
         }).isRequired,
       }).isRequired,
     }).isRequired,
@@ -52,19 +53,27 @@ class Class extends React.Component {
       return (
         <div className={s.root}>
           <h1>课程列表</h1>
-          {this.props.data.class.course.lessons.map(lesson => (
+          {this.props.data.class.course.lessons.map((lesson, i) => (
             <ListItem
               key={lesson.id}
               className={cx({
                 closed:
                   new Date(data.class.beginAt).getTime() +
-                    lesson.validatedIn * 24 * 60 * 60 * 1000 >
+                    this.props.data.class.course.validatedIn[i] *
+                      24 *
+                      60 *
+                      60 *
+                      1000 >
                   new Date().getTime(),
               })}
               onClick={this.handleClick(
                 `/class/${this.props.data.class.id}/lesson/${lesson.id}`,
-                new Date(data.class.beginAt).getTime() + 
-                    lesson.validatedIn * 24 * 60 * 60 * 1000 <
+                new Date(data.class.beginAt).getTime() +
+                  this.props.data.class.course.validatedIn[i] *
+                    24 *
+                    60 *
+                    60 *
+                    1000 <
                   new Date().getTime(),
               )}
             >

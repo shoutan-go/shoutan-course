@@ -16,6 +16,10 @@ export default new ObjectType({
     image: { type: new NonNull(StringType) },
     title: { type: new NonNull(StringType) },
     description: { type: new NonNull(StringType) },
+    validatedIn: {
+      type: new NonNull(StringType),
+      resolve: parent => JSON.parse(parent.validatedIn),
+    },
     lessons: {
       type: new List(LessonType),
       resolve: parent =>
@@ -23,7 +27,7 @@ export default new ObjectType({
           where: {
             course: parent.id,
           },
-          order: [['validatedIn', 'asc'], ['createdAt', 'asc']],
+          order: [['order', 'asc']],
         }),
     },
   },

@@ -13,8 +13,9 @@ query Class($id: ID!) {
         title
         description
         video
-        validatedIn
+        order
       }
+      validatedIn
     }
   }
 }
