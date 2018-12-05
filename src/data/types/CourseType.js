@@ -1,5 +1,6 @@
 import {
   GraphQLObjectType as ObjectType,
+  GraphQLInt as Int,
   GraphQLID as ID,
   GraphQLList as List,
   GraphQLString as StringType,
@@ -17,7 +18,7 @@ export default new ObjectType({
     title: { type: new NonNull(StringType) },
     description: { type: new NonNull(StringType) },
     validatedIn: {
-      type: new NonNull(StringType),
+      type: new List(Int),
       resolve: parent => JSON.parse(parent.validatedIn),
     },
     lessons: {
