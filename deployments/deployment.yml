@@ -1,33 +1,44 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta1 # for versions before 1.8.0 use apps/v1beta1
 kind: Deployment
 metadata:
   name: shoutan-course
-  labels:
-    app: shoutan-course
-    tier: frontend
 spec:
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 25%
-      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: shoutan-course
+      tier: frontend
+  replicas: 1
   template:
     metadata:
       labels:
         app: shoutan-course
         tier: frontend
     spec:
-      terminationGracePeriodSeconds: 60
       containers:
-      - envFrom:
-        - configMapRef:
-            name: shoutan-course
-        - secretRef:
-            name: web-secrets
-        image: registry-vpc.cn-qingdao.aliyuncs.com/shoutan/shoutan-course:latest
-        name: shoutan-course
-        imagePullPolicy: Always
+      - name: game-server
+        image: registry-vpc.cn-beijing.aliyuncs.com/shoutan/shoutan-course:0.2
         ports:
-          - containerPort: 8080
+        - containerPort: 8080
+        envFrom:
+        - configMapRef:
+            name: service-config
+        env:
+          - name: API_SERVER_URL
+            value: 'http://course.shoutanwq.com'
       imagePullSecrets:
-      - name: aliyun-qingdao-registry-secret
+      - name: aliyun-registry-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shoutan-course
+  labels:
+    app: shoutan-course
+    tier: frontend
+spec:
+  ports:
+    - port: 80
+      targetPort: 8080
+  selector:
+    app: shoutan-course
+    tier: frontend
