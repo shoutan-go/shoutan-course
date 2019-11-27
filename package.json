@@ -38,7 +38,7 @@
     "history": "^4.7.2",
     "isomorphic-style-loader": "^4.0.0",
     "jsonwebtoken": "^8.2.0",
-    "lodash": "^4.17.5",
+    "lodash": "^4.17.13",
     "material-ui": "^0.20.0",
     "md5": "^2.2.1",
     "mysql2": "^1.5.3",
