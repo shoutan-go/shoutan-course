@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: game-server
-        image: registry-vpc.cn-beijing.aliyuncs.com/shoutan/shoutan-course:0.2
+        image: registry-vpc.cn-beijing.aliyuncs.com/shoutan/shoutan-course:0.3
         ports:
         - containerPort: 8080
         envFrom:

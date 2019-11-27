@@ -11,9 +11,9 @@ import { Class, Course } from '../models';
 
 let HttpsProxyAgent = null;
 try {
-  HttpsProxyAgent = require('https-proxy-agent');  
+  HttpsProxyAgent = require('https-proxy-agent');
 } catch (error) {
- //ignore error 
+  // ignore error
 }
 const url = 'https://api.mch.weixin.qq.com/pay/unifiedorder';
 
@@ -123,7 +123,9 @@ export default {
         package: '',
         signType: '',
         tradeNo: '',
-        paySign: result.return_code || result.return_msg || 'error',
+        paySign: 'error',
+        return_code: result.return_code,
+        return_msg: result.return_msg,
       };
     } catch (e) {
       return {
@@ -132,7 +134,9 @@ export default {
         package: '',
         signType: '',
         tradeNo: '',
-        paySign: e.errmsg || e.errcode || 'error',
+        paySign: 'error',
+        errcode: e.errcode,
+        errmsg: e.errmsg,
       };
     }
   },
