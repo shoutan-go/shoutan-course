@@ -117,6 +117,7 @@ export default {
           tradeNo,
         };
       }
+      console.error(result);
       return {
         timestamp: 0,
         nonceStr: '',
@@ -128,6 +129,7 @@ export default {
         return_msg: result.return_msg,
       };
     } catch (e) {
+      console.error(e);
       return {
         timestamp: 0,
         nonceStr: '',
